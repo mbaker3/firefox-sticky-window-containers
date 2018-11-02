@@ -1,8 +1,12 @@
-# Sticky Containers
+# Window Containers
 
-Firefox extension to make the container of your current tab "stick" when you open a new tab, either via ctrl+t or by opening a link from outside Firefox.
+Firefox extension to make the tabs you open in each window "stick" to the same container. In practice, all new tabs in a window will open at the same container as the first tab.
 
-The intent here is to mimic the behavior of Chrome when you're using its separate profile support.
+This is useful, if you want to keep e.g. a work window and a personal window
+
+# History
+
+This extension is based on https://addons.mozilla.org/addon/sticky-containers/ whith very few modifications.
 
 # Download
-* https://addons.mozilla.org/addon/sticky-containers/
+* 
