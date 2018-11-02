@@ -54,6 +54,18 @@ const isPrivilegedURL = function(url) {
     url.startsWith('about:config');
 }
 
+const getFirstTabInWindow = function(windowId) {
+  if (windowId != browser.windows.WINDOW_ID_NONE) {
+    browser.tabs.query({windowId: windowId}).then(tabs => {
+      if (tabs.length > 0) {
+        return tabs[0];
+      }
+    }, e => console.error(e));
+  }
+  return null;
+};
+
+
 // Event flow is:
 // tab.onCreated (tab URL not yet set)
 // tab.onActivated
@@ -62,6 +74,8 @@ const isPrivilegedURL = function(url) {
 // tab.onUpdated -> status:loading + url
 // tab.onUpdated -> status:complete
 
+/*
+// Here we record the last tab id
 browser.tabs.onActivated.addListener(activeInfo => {
   console.debug('tab onActivated', activeInfo);
   if (activeInfo.tabId == abandonedTabId) {
@@ -71,6 +85,7 @@ browser.tabs.onActivated.addListener(activeInfo => {
     updateLastCookieStoreId(tab);
   }, e => console.error(e));
 });
+*/
 
 browser.webNavigation.onBeforeNavigate.addListener(details => {
   console.debug('webNaviagation onBeforeNavigate', details);
@@ -102,10 +117,13 @@ browser.webNavigation.onBeforeNavigate.addListener(details => {
   }, e => console.error(e));
 });
 
+// Every time focus is changed to a new tab
+// we update the last used cookie store
 browser.windows.onFocusChanged.addListener(windowId => {
   if (windowId != browser.windows.WINDOW_ID_NONE) {
-    browser.tabs.query({active: true, windowId: windowId}).then(tabs => {
+    browser.tabs.query({windowId: windowId}).then(tabs => {
       if (tabs.length > 0) {
+        console.debug('WindowFocus. New First tab:', tabs[0]);
         updateLastCookieStoreId(tabs[0]);
       }
     }, e => console.error(e));

@@ -1,10 +1,10 @@
 {
   "manifest_version": 2,
-  "name": "Sticky Containers",
-  "version": "1.0.1",
-  "author": "David Lynch",
+  "name": "Window containers",
+  "version": "1.0.0",
+  "author": "Yiannis Crhoankis",
 
-  "description": "New tabs will keep the current container",
+  "description": "All tabs in a window are loaded in the container of the first tab.",
 
   "icons": {
     "48": "icons/container-site-pinned-plain.svg",
@@ -12,7 +12,7 @@
   },
 
   "background": {
-    "scripts": ["background.js"]
+    "scripts": ["wsc-background.js"]
   },
   "permissions": [
     "<all_urls>",
