@@ -85,6 +85,8 @@ browser.webNavigation.onBeforeNavigate.addListener(details => {
       && tab.openerTabId == undefined
       // ...and nothing else has pushed it out of the default container (e.g. incognito)
       && tab.cookieStoreId == defaultCookieStoreId
+      // ...this is the only way to find about customize tab
+      && tab.title != 'Customize Firefox'
     ) {
       // It'd be nice if tabs.update worked for this, but it doesn't.
       // TODO: think about the chosen cookie store harder? This works great for new-tab

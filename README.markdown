@@ -9,9 +9,15 @@ The extensions achieves that by opening all tabs to the same container as the fi
 To e.g. create work window, open a window and set the first tab to "work" container.
 All subsequent tabs will open in the same container.
 
+# Dependencies
+
+This extension depends on the Multiple Account Containers extension.
+
+# Download
+
+* https://addons.mozilla.org/addon/sticky-window-containers/
+
 # Credits
 
 This extension is based on https://addons.mozilla.org/addon/sticky-containers/
 (https://github.com/kemayo/firefox-sticky-containers)
-
-# Download
