@@ -7,8 +7,8 @@
   "description": "Tabs open in the same container as the first tab in the window.",
 
   "icons": {
-    "48": "icons/container-site-pinned-plain.svg",
-    "96": "icons/container-site-pinned-plain.svg"
+    "48": "icons/sticky-window-containers.svg",
+    "96": "icons/sticky-window-containers.svg"
   },
 
   "background": {
