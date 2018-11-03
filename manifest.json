@@ -1,10 +1,10 @@
 {
   "manifest_version": 2,
-  "name": "Window containers",
+  "name": "Sticky Window Containers",
   "version": "1.0.0",
   "author": "Yiannis Crhoankis",
 
-  "description": "All tabs in a window are loaded in the container of the first tab.",
+  "description": "Tabs open in the same container as the first tab in the window.",
 
   "icons": {
     "48": "icons/container-site-pinned-plain.svg",
@@ -12,7 +12,7 @@
   },
 
   "background": {
-    "scripts": ["wsc-background.js"]
+    "scripts": ["swc-background.js"]
   },
   "permissions": [
     "<all_urls>",

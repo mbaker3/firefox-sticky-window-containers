@@ -54,18 +54,6 @@ const isPrivilegedURL = function(url) {
     url.startsWith('about:config');
 }
 
-const getFirstTabInWindow = function(windowId) {
-  if (windowId != browser.windows.WINDOW_ID_NONE) {
-    browser.tabs.query({windowId: windowId}).then(tabs => {
-      if (tabs.length > 0) {
-        return tabs[0];
-      }
-    }, e => console.error(e));
-  }
-  return null;
-};
-
-
 // Event flow is:
 // tab.onCreated (tab URL not yet set)
 // tab.onActivated
@@ -74,22 +62,10 @@ const getFirstTabInWindow = function(windowId) {
 // tab.onUpdated -> status:loading + url
 // tab.onUpdated -> status:complete
 
-/*
-// Here we record the last tab id
-browser.tabs.onActivated.addListener(activeInfo => {
-  console.debug('tab onActivated', activeInfo);
-  if (activeInfo.tabId == abandonedTabId) {
-    return;
-  }
-  browser.tabs.get(activeInfo.tabId).then(tab => {
-    updateLastCookieStoreId(tab);
-  }, e => console.error(e));
-});
-*/
-
 browser.webNavigation.onBeforeNavigate.addListener(details => {
-  console.debug('webNaviagation onBeforeNavigate', details);
+  //console.debug('webNaviagation onBeforeNavigate');
   if (details.tabId == abandonedTabId) {
+    console.debug('abandoned tab');
     return;
   }
   if (isPrivilegedURL(details.url)) {
@@ -97,7 +73,10 @@ browser.webNavigation.onBeforeNavigate.addListener(details => {
     return;
   }
   browser.tabs.get(details.tabId).then(tab => {
-    console.debug('onBeforeNavigate tab fetched', tab);
+    console.debug('onBeforeNavigate', tab);
+    console.debug('blankPages.has(tab.url)', blankPages.has(tab.url));
+    console.debug('tab.openerTabId == undefined', tab.openerTabId == undefined);
+    console.debug('tab.cookieStoreId == defaultCookieStoreId', tab.cookieStoreId == defaultCookieStoreId);
     if(
       // tab will be pre-navigation still, so old URL here:
       blankPages.has(tab.url)
@@ -106,29 +85,31 @@ browser.webNavigation.onBeforeNavigate.addListener(details => {
       && tab.openerTabId == undefined
       // ...and nothing else has pushed it out of the default container (e.g. incognito)
       && tab.cookieStoreId == defaultCookieStoreId
-      && lastCookieStoreId != defaultCookieStoreId
     ) {
       // It'd be nice if tabs.update worked for this, but it doesn't.
       // TODO: think about the chosen cookie store harder? This works great for new-tab
       // from a container tab, but opening a link from an external handler might grab an
       // unrelated window.
-      openInDifferentContainer(lastCookieStoreId, tab, details.url);
+      if (tab.windowId != browser.windows.WINDOW_ID_NONE) {
+        browser.tabs.query({windowId: tab.windowId}).then(tabs => {
+          console.debug('Window Tab Length', tabs.length);
+          if (tabs.length > 1) {
+            console.debug('Updating tab container');
+            updateLastCookieStoreId(tabs[0]);
+            openInDifferentContainer(lastCookieStoreId, tab, details.url);
+          }
+          else {
+            console.debug('Single Tab Window');
+          }
+        }, e => console.error(e));
+      }
+      else {
+        console.debug('WINDOW_ID_NONE');
+      }
     }
   }, e => console.error(e));
 });
 
-// Every time focus is changed to a new tab
-// we update the last used cookie store
-browser.windows.onFocusChanged.addListener(windowId => {
-  if (windowId != browser.windows.WINDOW_ID_NONE) {
-    browser.tabs.query({windowId: windowId}).then(tabs => {
-      if (tabs.length > 0) {
-        console.debug('WindowFocus. New First tab:', tabs[0]);
-        updateLastCookieStoreId(tabs[0]);
-      }
-    }, e => console.error(e));
-  }
-});
 
 // DEBUG help for me later:
 /*
