@@ -1,12 +1,17 @@
 # Window Containers
 
-Firefox extension to make the tabs you open in each window "stick" to the same container. In practice, all new tabs in a window will open at the same container as the first tab.
+Firefox extension that makes all tabs in a window to "stick" to the same container that the first tab. Effectively making windows behave as "single container windows".
 
-This is useful, if you want to keep e.g. a work window and a personal window
+This is useful for people like me that assign a whole window to an activity (e.g. work or personal)
+and further move those windows to each own workspace.
 
-# History
+The extensions achieves that by opening all tabs to the same container as the first tab in a window.
+To e.g. create work window, open a window and set the first tab to "work" container.
+All subsequent tabs will open in the same container.
 
-This extension is based on https://addons.mozilla.org/addon/sticky-containers/ whith very few modifications.
+# Credits
+
+This extension is based on https://addons.mozilla.org/addon/sticky-containers/
+(https://github.com/kemayo/firefox-sticky-containers)
 
 # Download
-* 
