@@ -93,7 +93,7 @@ browser.webNavigation.onBeforeNavigate.addListener(details => {
       if (tab.windowId != browser.windows.WINDOW_ID_NONE) {
         browser.tabs.query({windowId: tab.windowId}).then(tabs => {
           console.debug('Window Tab Length', tabs.length);
-          if (tabs.length > 1 && tab[0].cookieStoreId != defaultCookieStoreId) {
+          if (tabs.length > 1 && tabs[0].cookieStoreId != defaultCookieStoreId) {
             console.debug('Updating tab container');
             updateLastCookieStoreId(tabs[0]);
             openInDifferentContainer(lastCookieStoreId, tab, details.url);
