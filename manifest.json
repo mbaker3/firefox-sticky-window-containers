@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Sticky Window Containers",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "author": "Yiannis Chronakis",
 
   "description": "Tabs open in the same container as the first tab in the window.",
