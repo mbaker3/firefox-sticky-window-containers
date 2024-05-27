@@ -1,5 +1,7 @@
 const blankPages = new Set(['about:blank', 'about:newtab']);
 
+// TODO: Move into addon preferences
+const ignorePinnedTabs = true;
 const defaultCookieStoreId = 'firefox-default';
 const privateCookieStorePrefix = 'firefox-private';
 
@@ -57,6 +59,25 @@ const isPrivilegedURL = function(url) {
   
 }
 
+const findReferenceTab = function(tabs) {
+  if(tabs.length < 1){
+    return null;
+  }
+
+  let tab;
+  if(ignorePinnedTabs) {
+    tab = tabs.find(tab => tab.pinned);
+    console.debug("Non-pinned tab found: " + (tab == true));
+  }
+  
+  if(!tab){
+    console.debug("Using first tab as reference.");
+    tab = tabs[0];
+  }
+  
+  return tab;
+}
+
 // Event flow is:
 // tab.onCreated (tab URL not yet set)
 // tab.onActivated
@@ -112,10 +133,15 @@ browser.webNavigation.onBeforeNavigate.addListener(details => {
         if (tab.windowId != browser.windows.WINDOW_ID_NONE) {
           browser.tabs.query({windowId: tab.windowId}).then(tabs => {
             console.debug('Window Tab Length', tabs.length);
-            console.debug('tabs[0].cookieStoreId', tabs[0].cookieStoreId);
-            if (tabs.length > 1 && tabs[0].cookieStoreId != defaultCookieStoreId && tabs[0].cookieStoreId != fbCookieStoreId) {
+            let referenceTab = findReferenceTab(tabs);
+            if(!referenceTab) {
+              console.debug('No tabs found');
+              return;
+            }
+            console.debug('referenceTab.cookieStoreId', referenceTab.cookieStoreId);
+            if (referenceTab.cookieStoreId != defaultCookieStoreId && referenceTab.cookieStoreId != fbCookieStoreId) {
               console.debug('Updating tab container');
-              updateLastCookieStoreId(tabs[0]);
+              updateLastCookieStoreId(referenceTab);
               openInDifferentContainer(lastCookieStoreId, tab, details.url);
             }
             else {
